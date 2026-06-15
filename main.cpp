@@ -30,17 +30,23 @@ public:
         if (data.empty()) return;
 
         int n = data.size();
+        // flaga optymalizacji
+        bool swapped;
 
         for (int i = 0; i < n - 1; i++) {
+            swapped = false;
             for (int j = 0; j < n - i - 1; j++) {
                 compares++;
                 if (data[j] > data[j + 1]) {
                     swap(data[j], data[j + 1]);
                     swaps++;
+                    // oznacz zamiane
+                    swapped = true;
                 }
             }
+            // jesli bez zamian to przerwij
+            if (!swapped) break;
         }
-
     }
 
     void shakerSort(long long &compares, long long &swaps) {
@@ -50,22 +56,37 @@ public:
 
         int start = 0;
         int end = data.size() - 1;
+        // flaga startowa
+        bool swapped = true;
 
-        while (start < end) {
+        while (swapped && start < end) {
+            // reset flagi przed przebiegiem
+            swapped = false;
+
+            // przebieg w prawo
             for (int i = start; i < end; i++) {
                 compares++;
                 if (data[i] > data[i + 1]) {
                     swap(data[i], data[i + 1]);
                     swaps++;
+                    swapped = true;
                 }
             }
+
+            // czy bylo juz sort
+            if (!swapped) break;
+
             end--;
 
+            swapped = false;
+
+            // przebieg w lewo
             for (int i = end - 1; i >= start; i--) {
                 compares++;
                 if (data[i] > data[i + 1]) {
                     swap(data[i], data[i + 1]);
                     swaps++;
+                    swapped = true;
                 }
             }
             start++;
