@@ -24,8 +24,6 @@ public:
         return data;
     }
 
-    //CZY MA BYC TEN SWAPPED BREAK?? chyba nie..
-
     void bubbleSort(long long &compares, long long &swaps) {
         compares = 0;
         swaps = 0;
@@ -75,30 +73,42 @@ public:
     }
 
     int lomutoSort(int low, int high, long long &compares, long long &swaps) {
-        int middle = low + (high -low) / 2;
-        swap(data[middle], data[high]);
-        compares++;
-
+        // pivot na koncu
         double pivot = data[high];
+
+        // granica mniejszych
         int i = low - 1;
 
+        // skanowanie tablicy
         for (int j = low; j <= high - 1; j++) {
             compares++;
+
             if (data[j] < pivot) {
+                // przesun granice
                 i++;
                 swap(data[i], data[j]);
                 swaps++;
             }
         }
+
+        // wstaw pivot
         swap(data[i + 1], data[high]);
         swaps++;
+
+        // zwracamy indeks
         return i + 1;
     }
 
     void lomutoSortInner(int low, int high, long long &compares, long long &swaps) {
+        // warunek stopu
         if (low < high) {
+            // podzial lomuto
             int p = lomutoSort(low, high, compares, swaps);
+
+            // sortuj lewo
             lomutoSortInner(low, p - 1, compares, swaps);
+
+            // sortuj prawo
             lomutoSortInner(p + 1, high, compares, swaps);
         }
     }
@@ -106,23 +116,31 @@ public:
     void runLomutoSort(long long &compares, long long &swaps) {
         compares = 0;
         swaps = 0;
+
         if (!data.empty()) {
             lomutoSortInner(0, data.size() - 1, compares, swaps);
         }
     }
 
     int hoareSort(int low, int high, long long &compares, long long &swaps) {
+        // srodek tablicy
         int middle = low + (high -low) / 2;
         double pivot = data[middle];
+
+        // lewy wskaznik
         int i = low - 1;
+
+        // prawy wskaznik
         int j = high + 1;
 
         while (true) {
+            // szukaj wiekszego po lewej
             do {
                 i++;
                 compares++;
             } while (data[i] < pivot);
 
+            // szukaj mniejszego po prawej
             do {
                 j--;
                 compares++;
@@ -130,6 +148,7 @@ public:
 
             if (i >= j) return j;
 
+            // zamiana elementow
             swap(data[i], data[j]);
             swaps++;
         }
@@ -138,7 +157,9 @@ public:
     void hoareSortInner(int low, int high, long long &compares, long long &swaps) {
         if (low < high) {
             int p = hoareSort(low, high, compares, swaps);
+            // sortuj lewo
             hoareSortInner(low, p, compares, swaps);
+            // sortuj prawo
             hoareSortInner(p + 1, high, compares, swaps);
         }
     }
@@ -152,17 +173,24 @@ public:
     }
 
     void heapSortInner(int n, int i, long long &compares, long long &swaps) {
+        // zakladamy ze aktualny wezel to maksimum
         int biggest = i;
+
+        // indeksy dzieci ze wzoru na drzewo binarne
         int left = 2 * i + 1;
         int right = 2 * i + 2;
 
+        // weryfikacja czy lewe dziecko nie wychodzi poza zakres kopca
         if (left < n) {
             compares++;
+            // sprawdzenie czy dziecko zaburza wlasnosc max-heap
             if (data[left] > data[biggest]) {
+                // aktualizacja kandydata na szczyt
                 biggest = left;
             }
         }
 
+        // to samo dla prawej galezi
         if (right < n) {
             compares++;
             if (data[right] > data[biggest]) {
@@ -170,9 +198,12 @@ public:
             }
         }
 
+        // jesli znalezlismy wieksze dziecko niz ojciec
         if (biggest != i) {
+            // wpychamy mniejszy element nizej
             swap(data[i], data[biggest]);
             swaps++;
+            // rekurencyjna naprawa zepsutego poddrzewa, zeby znowu byl to max-heap
             heapSortInner(n, biggest, compares, swaps);
         }
     }
@@ -182,13 +213,18 @@ public:
         swaps = 0;
         int n = data.size();
 
+        // start od najnizszego poziomu wezlow posiadajacych dzieci
         for (int i = n / 2 - 1; i >= 0; i--) {
+            // przeksztalcenie surowej tablicy w strukture kopca
             heapSortInner(n, i, compares, swaps);
         }
 
+        // petla odcinajaca posortowane juz elementy z konca tablicy
         for (int i = n - 1; i > 0; i--) {
+            // eksmisja aktualnego najwiekszego elementu na ostateczna pozycje
             swap(data[0], data[i]);
             swaps++;
+            // przywrocenie wlasnosci kopca dla pozostalej nieposortowanej czesci
             heapSortInner(i, 0, compares, swaps);
         }
     }
@@ -200,7 +236,7 @@ private:
 public:
     void keyboardInput() {
         int n;
-        cout << "Podaj liczbę elementów tablicy: ";
+        cout << "Podaj liczbę elementow tablicy: ";
         if (!(cin >> n)) {
             cin.clear();
             cin.ignore();
@@ -269,15 +305,15 @@ public:
         fileCreate(file);
 
         file << left << setw(25) << "Nazwa metody"
-             << setw(18) << "Długość tablicy"
+             << setw(18) << "Długosc tablicy"
              << setw(35) << "Rodzaj tablicy"
-             << setw(20) << "Liczba porównań"
-             << setw(20) << "Liczba przestawień" << endl;
+             << setw(20) << "Liczba porownan"
+             << setw(20) << "Liczba przestawien" << endl;
         file << string(118, '-') << endl;
 
-        int lengths[] = {100, 1000, 1000000};
+        int lengths[] = {100, 1000, 10000};
         int types[] = {1, 2, 3, 4};
-        string typesNames[] = {"Losowe", "Posortowane rosnąco", "Posortowane malejąco", "Częściowo posortowane (90%)"};
+        string typesNames[] = {"Losowe", "Posortowane rosnąco", "Posortowane malejąco", "Czesciowo posortowane (90%)"};
         string sorts[] = {"Bubble Sort", "Shaker Sort", "Quick Sort (Lomuto)", "Quick Sort (Hoare)", "Heap Sort"};
 
         for (int l : lengths) {
@@ -335,15 +371,15 @@ int main() {
     int choice = 0;
 
     while (choice != 3) {
-        cout << "1. Wprowadź dane z klawiatury" << endl;
+        cout << "1. Wprowadz dane z klawiatury" << endl;
         cout << "2. Wygeneruj dane" << endl;
-        cout << "3. Wyjdź" << endl;
-        cout << "Twój wybór: ";
+        cout << "3. Wyjdz" << endl;
+        cout << "Twoj wybor: ";
 
         if (!(cin >> choice)) {
             cin.clear();
             cin.ignore();
-            cout << "Błąd, spróbuj ponownie" << endl;
+            cout << "Bład, sprobuj ponownie" << endl;
             continue;
         }
 
