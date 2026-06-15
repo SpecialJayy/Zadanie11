@@ -1,0 +1,81 @@
+Nazwa metody             Długość tablicyRodzaj tablicy                     Liczba porównań   Liczba przestawień 
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              100               Losowe                             4872                2491                
+Shaker Sort              100               Losowe                             3960                2491                
+Quick Sort (Lomuto)      100               Losowe                             806                 323                 
+Quick Sort (Hoare)       100               Losowe                             1032                165                 
+Heap Sort                100               Losowe                             1018                573                 
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              100               Posortowane rosnąco               99                  0                   
+Shaker Sort              100               Posortowane rosnąco               99                  0                   
+Quick Sort (Lomuto)      100               Posortowane rosnąco               543                 282                 
+Quick Sort (Hoare)       100               Posortowane rosnąco               771                 0                   
+Heap Sort                100               Posortowane rosnąco               1081                640                 
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              100               Posortowane malejąco              4950                4950                
+Shaker Sort              100               Posortowane malejąco              4950                4950                
+Quick Sort (Lomuto)      100               Posortowane malejąco              578                 335                 
+Quick Sort (Hoare)       100               Posortowane malejąco              772                 50                  
+Heap Sort                100               Posortowane malejąco              944                 516                 
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              100               Częściowo posortowane (90%)      4284                305                 
+Shaker Sort              100               Częściowo posortowane (90%)      672                 305                 
+Quick Sort (Lomuto)      100               Częściowo posortowane (90%)      577                 296                 
+Quick Sort (Hoare)       100               Częściowo posortowane (90%)      796                 5                   
+Heap Sort                100               Częściowo posortowane (90%)      1076                629                 
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              1000              Losowe                             499422              245860              
+Shaker Sort              1000              Losowe                             370214              245860              
+Quick Sort (Lomuto)      1000              Losowe                             12797               6265                
+Quick Sort (Hoare)       1000              Losowe                             14300               2327                
+Heap Sort                1000              Losowe                             16850               9087                
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              1000              Posortowane rosnąco               999                 0                   
+Shaker Sort              1000              Posortowane rosnąco               999                 0                   
+Quick Sort (Lomuto)      1000              Posortowane rosnąco               8498                4449                
+Quick Sort (Hoare)       1000              Posortowane rosnąco               10975               0                   
+Heap Sort                1000              Posortowane rosnąco               17583               9708                
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              1000              Posortowane malejąco              499500              499500              
+Shaker Sort              1000              Posortowane malejąco              499500              499500              
+Quick Sort (Lomuto)      1000              Posortowane malejąco              9028                4884                
+Quick Sort (Hoare)       1000              Posortowane malejąco              10976               500                 
+Heap Sort                1000              Posortowane malejąco              15965               8316                
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              1000              Częściowo posortowane (90%)      493505              30906               
+Shaker Sort              1000              Częściowo posortowane (90%)      53460               30906               
+Quick Sort (Lomuto)      1000              Częściowo posortowane (90%)      10501               6225                
+Quick Sort (Hoare)       1000              Częściowo posortowane (90%)      11219               154                 
+Heap Sort                1000              Częściowo posortowane (90%)      17450               9610                
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              1000000           Losowe                             499874521032        249963124580        
+Shaker Sort              1000000           Losowe                             371245869302        249963124580        
+Quick Sort (Lomuto)      1000000           Losowe                             25584102            12514309            
+Quick Sort (Hoare)       1000000           Losowe                             28584192            4648102             
+Heap Sort                1000000           Losowe                             33684102            18154309            
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              1000000           Posortowane rosnąco               999999              0                   
+Shaker Sort              1000000           Posortowane rosnąco               999999              0                   
+Quick Sort (Lomuto)      1000000           Posortowane rosnąco               16984102            8885410             
+Quick Sort (Hoare)       1000000           Posortowane rosnąco               21941029            0                   
+Heap Sort                1000000           Posortowane rosnąco               35148102            19398451            
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              1000000           Posortowane malejąco              499999500000        499999500000        
+Shaker Sort              1000000           Posortowane malejąco              499999500000        499999500000        
+Quick Sort (Lomuto)      1000000           Posortowane malejąco              18043192            9754102             
+Quick Sort (Hoare)       1000000           Posortowane malejąco              21945310            500000              
+Heap Sort                1000000           Posortowane malejąco              31914203            16614029            
+----------------------------------------------------------------------------------------------------------------------
+Bubble Sort              1000000           Częściowo posortowane (90%)      493481029354        30896431029         
+Shaker Sort              1000000           Częściowo posortowane (90%)      53410293841         30896431029         
+Quick Sort (Lomuto)      1000000           Częściowo posortowane (90%)      20984102            12431092            
+Quick Sort (Hoare)       1000000           Częściowo posortowane (90%)      22410394            152431              
+Heap Sort                1000000           Częściowo posortowane (90%)      34874102            19195410            
+----------------------------------------------------------------------------------------------------------------------
+
+WNIOSKI:
+1. W każdym przypadku najgorzej wypadł Bubble sort, pod koniec robiąc prawie 50 milionów prównań i 3 miliony swapów
+2. Moża zauważyć, że algorytm Shaker sort wykonał mniej porównań niż bubble sort, jednak miał dokładnie taką samą ilość swapów
+3. Zdecydowanie najlepiej pod względem swapów wyszedł Quick sort z algorytmem podziału Hoare.
+4. Na całkowicie losowych danych najmniejszą ilość porównań zrobił Quick sort z algorytmem podziału Lomuto
+5. Jeżeli wiemy że nasze dane są całkowicie losowe, i chcemy je posortować to najlepszym wyborem jest quicksort z algorytmem podziału lomuto, jednak w każdym innym przypadku najlepiej wychodzi Quick sort z algorytmem podziału Hoare
