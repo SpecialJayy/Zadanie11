@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <random>
 #include <string>
+
+#include "libs/exceptions.h"
 #include "libs/files.h"
 
 using namespace std;
@@ -14,6 +16,7 @@ class cTablica {
 private:
     vector<int> data;
 public:
+    //domyślny konstruktor
     cTablica() {}
 
     void setData(vector<int>& newData) {
@@ -24,6 +27,11 @@ public:
         return data;
     }
 
+    /**
+     * @brief podstawowe sortowanie bąbelkowe
+     * @param compares liczba porównań
+     * @param swaps liczba przestawień
+     */
     void bubbleSort(long long &compares, long long &swaps) {
         compares = 0;
         swaps = 0;
@@ -49,6 +57,11 @@ public:
         }
     }
 
+    /**
+    * @brief sortowanie bąbelkowe wahadłowe
+     * @param compares liczba porównań
+     * @param swaps liczba przestawień
+     */
     void shakerSort(long long &compares, long long &swaps) {
         compares = 0;
         swaps = 0;
@@ -94,7 +107,10 @@ public:
     }
 
     int lomutoSort(int low, int high, long long &compares, long long &swaps) {
-        // pivot na koncu
+        int middle = low + (high -low) / 2;
+        swap(data[middle], data[high]);
+        compares++;
+
         double pivot = data[high];
 
         // granica mniejszych
@@ -193,8 +209,15 @@ public:
         }
     }
 
+    /**
+     * @brief buduje kopiec w drzewie binarnym
+     * @param n rozmiar kopca
+     * @param i indeks korzenia
+     * @param compares liczba porównań
+     * @param swaps liczba przestawień
+     */
     void heapSortInner(int n, int i, long long &compares, long long &swaps) {
-        // zakladamy ze aktualny wezel to maksimum
+        // zakładamy, że aktualny węzeł to maksimum
         int biggest = i;
 
         // indeksy dzieci ze wzoru na drzewo binarne
@@ -204,14 +227,13 @@ public:
         // weryfikacja czy lewe dziecko nie wychodzi poza zakres kopca
         if (left < n) {
             compares++;
-            // sprawdzenie czy dziecko zaburza wlasnosc max-heap
+            // sprawdzenie czy dziecko jest większe od aktualnego największego węzła
             if (data[left] > data[biggest]) {
-                // aktualizacja kandydata na szczyt
                 biggest = left;
             }
         }
 
-        // to samo dla prawej galezi
+        // to samo dla prawej gałęzi
         if (right < n) {
             compares++;
             if (data[right] > data[biggest]) {
@@ -219,30 +241,36 @@ public:
             }
         }
 
-        // jesli znalezlismy wieksze dziecko niz ojciec
+        // jeśli któreś dziecko było większe od rodzica
         if (biggest != i) {
-            // wpychamy mniejszy element nizej
+            //zamieniamy je miejscami
             swap(data[i], data[biggest]);
             swaps++;
-            // rekurencyjna naprawa zepsutego poddrzewa, zeby znowu byl to max-heap
+            // po zamianie rekurencyjnie sprawdzamy czy poddrzewo dalej jest kopcem
             heapSortInner(n, biggest, compares, swaps);
         }
     }
 
+    /**
+     * @brief sortowanie kopcowe (heap sort)
+     * @param compares liczba porównań
+     * @param swaps liczba przestawień
+     */
     void heapSort(long long &compares, long long &swaps) {
         compares = 0;
         swaps = 0;
         int n = data.size();
 
-        // start od najnizszego poziomu wezlow posiadajacych dzieci
+
+        //budowa początkowego kopca
+        // start od najniższego poziomu węzłów posiadających dzieci
         for (int i = n / 2 - 1; i >= 0; i--) {
-            // przeksztalcenie surowej tablicy w strukture kopca
             heapSortInner(n, i, compares, swaps);
         }
 
-        // petla odcinajaca posortowane juz elementy z konca tablicy
+        // petla odcinająca posortowane już elementy z końca tablicy
         for (int i = n - 1; i > 0; i--) {
-            // eksmisja aktualnego najwiekszego elementu na ostateczna pozycje
+            // przeniesienie aktualnie największego elementu na ostatnią pozycję w tablicy
             swap(data[0], data[i]);
             swaps++;
             // przywrocenie wlasnosci kopca dla pozostalej nieposortowanej czesci
@@ -255,17 +283,17 @@ class cSortTablicy {
 private:
     cTablica obj;
 public:
-    void keyboardInput() {
+    void keyboardInput(vector<int> &baseData) {
         int n;
-        cout << "Podaj liczbę elementow tablicy: ";
+        cout << "Podaj liczbę elementów tablicy: ";
         if (!(cin >> n)) {
             cin.clear();
             cin.ignore();
-            throw "blad";
+            throw WrongDataException("Błąd: niepoprawny format danych");
         }
 
         if (n <= 0) {
-            throw "blad";
+            throw ArraySizeException("Błąd: niepoprawny rozmiar");
         }
 
         vector<int> temp(n);
@@ -274,10 +302,10 @@ public:
             if (!(cin >> temp[i])) {
                 cin.clear();
                 cin.ignore();
-                throw "blad";
+                throw WrongDataException("Błąd: niepoprawny format danych");
             }
         }
-        obj.setData(temp);
+        baseData = temp;
     }
 
     vector<int> generateData(int length, int type) {
@@ -297,20 +325,24 @@ public:
                     v[i] = dis(mt);
                 }
                 break;
+            //posortowane rosnąco
             case 2:
                 for (int i = 0; i < length; i++) {
                     v[i] = i;
                 }
                 break;
+            //posortowane malejąco
             case 3:
                 for (int i = 0; i < length; i++) {
                     v[i] = length - i;
                 }
                 break;
+            //tablica posortowana w 90%
             case 4:
                 for (int i = 0; i < length; i++) {
                     v[i] = i;
                 }
+                //używamy 5% długości tablicy co daje 10% swapów
                 for (int i = 0; i < length * 0.05; i++) {
                     int idx1 = rand() % length;
                     int idx2 = rand() % length;
@@ -321,37 +353,29 @@ public:
         return v;
     }
 
-    void generateOutputFiles() {
+    void generateOutputFiles(bool keyboard, vector<int> &baseData) {
         ofstream file;
         fileCreate(file);
 
         file << left << setw(25) << "Nazwa metody"
-             << setw(18) << "Długosc tablicy"
+             << setw(18) << "Długość tablicy"
              << setw(35) << "Rodzaj tablicy"
-             << setw(20) << "Liczba porownan"
-             << setw(20) << "Liczba przestawien" << endl;
+             << setw(20) << "Liczba porównań"
+             << setw(20) << "Liczba przestawień" << endl;
         file << string(118, '-') << endl;
 
-        int lengths[] = {100, 1000, 10000};
+        int lengths[] = {100, 1000, 1000000};
         int types[] = {1, 2, 3, 4};
-        string typesNames[] = {"Losowe", "Posortowane rosnąco", "Posortowane malejąco", "Czesciowo posortowane (90%)"};
+        string typesNames[] = {"Losowe", "Posortowane rosnąco", "Posortowane malejąco", "Częściowo posortowane (90%)"};
         string sorts[] = {"Bubble Sort", "Shaker Sort", "Quick Sort (Lomuto)", "Quick Sort (Hoare)", "Heap Sort"};
 
         for (int l : lengths) {
             for (int t : types) {
-                vector<int> baseData = generateData(l, t);
+                if (!keyboard) {
+                    baseData = generateData(l, t);
+                }
 
                 for (string& s : sorts) {
-
-                    if ((s == "Bubble Sort" || s == "Shaker Sort") && l == 1000000) {
-                        file << left << setw(25) << s
-                             << setw(18) << l
-                             << setw(35) << typesNames[t - 1]
-                             << setw(20) << "Pominieto (O(N^2))"
-                             << setw(20) << "Pominieto (O(N^2))" << endl;
-                        continue;
-                    }
-
                     obj.setData(baseData);
                     long long compares = 0;
                     long long swaps = 0;
@@ -377,11 +401,7 @@ public:
                 file << string(118, '-') << endl;
             }
         }
-        file << endl << "WNIOSKI:" << endl;
-        file << "1." << endl;
-        file << "2." << endl;
-        file << "3." << endl;
-        cout << "Tabela i wnioski zapisane" << endl;
+        cout << "Tabela zapisana" << endl;
         file.close();
     }
 };
@@ -392,25 +412,27 @@ int main() {
     int choice = 0;
 
     while (choice != 3) {
-        cout << "1. Wprowadz dane z klawiatury" << endl;
+        cout << "1. Wprowadź dane z klawiatury" << endl;
         cout << "2. Wygeneruj dane" << endl;
-        cout << "3. Wyjdz" << endl;
-        cout << "Twoj wybor: ";
+        cout << "3. Wyjdź" << endl;
+        cout << "Twój wybór: ";
 
         if (!(cin >> choice)) {
             cin.clear();
             cin.ignore();
-            cout << "Bład, sprobuj ponownie" << endl;
+            cout << "Błąd, spróbuj ponownie" << endl;
             continue;
         }
 
         try {
+            vector<int> baseData;
             switch (choice) {
                 case 1:
-                    c.keyboardInput();
+                    c.keyboardInput(baseData);
+                    c.generateOutputFiles(true, baseData);
                     break;
                 case 2:
-                    c.generateOutputFiles();
+                    c.generateOutputFiles(false, baseData);
                     break;
                 case 3:
                     break;

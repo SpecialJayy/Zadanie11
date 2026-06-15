@@ -3,5 +3,4 @@ project(Zadanie11)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Zadanie11 main.cpp libs/files.cpp
-        main.cpp)
+add_executable(Zadanie11 main.cpp libs/files.cpp libs/exceptions.h)

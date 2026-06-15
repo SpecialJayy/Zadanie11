@@ -1,5 +1,6 @@
 #include "files.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -15,10 +16,10 @@ void fileOpen(ifstream &read) {
 }
 
 void fileCreate(ofstream& write) {
-    char filename[60] = {};
+    string filename;
     cout << "\nEnter file name to save: ";
     cin >> filename;
-    write.open(filename);
+    write.open("../" + filename);
     if (!write) {
         cout << "\nUnable to save to file." << endl;
         exit(0);
